@@ -1,0 +1,95 @@
+server:
+  port: 8081
+
+spring:
+  config:
+    import: configserver:http://localhost:8085
+
+  application:
+      name: USER-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/microservices
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
+
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingPlatformCircuitBreaker:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10000 # Changed to milliseconds (10 seconds)
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+  retry:
+    instances:
+      rating_platformService:
+        maxAttempts: 3
+        waitDuration: 3s
+
+
+  rate-limiter:
+      instances:
+        userRateLimiter:
+          limitRefreshPeriod: 6s
+          limitForPeriod: 2
+          timeoutDuration: 0s
+
+
+
+
+#resilience4j:
+#  circuitbreaker:
+#    instances:
+#      ratingPlatfromFallback:
+#        registerHealthIndicator: true
+#        eventConsumerBufferSize: 10
+#        failureRateThreshold: 50
+#        minimumNumberOfCalls: 5
+#        automaticTransitionFromOpenToHalfOpenEnabled: true
+#        waitDurationInOpenState: 10s
+#        permittedNumberOfCallsInHalfOpenState:  3
+#        slidingWindowSize: 10
+#        slidingWindowType: COUNT_BASED
+
+
+#  application:
+#    name: USER-SERVICE
+
+# eureka:
+#   instance:
+#     prefer-ip-address: true
+#   client:
+#     fetch-registry: true
+#     register-with-eureka: true
+#     service-url:
+#       defaultZone: http://localhost:8761/eureka

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  java_db_micro:
+    container_name: java_db_micro
+    image: mysql:8.0.27
+    volumes:
+      - C:/Users/ShwetaTanwar/Desktop/container_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_DATABASE: microservices
+      MYSQL_ROOT_PASSWORD: root
+
+
