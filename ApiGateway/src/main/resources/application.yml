@@ -1,0 +1,40 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+
+        - id: LEARNING-PLATFORM-SERVICE
+          uri: lb://LEARNING-PLATFORM-SERVICE
+          predicates:
+            - Path=/platforms/**,/courses/**
+
+        - id: RATING-SERVICE
+          uri: lb://RATING-SERVICE
+          predicates:
+            - Path=/ratings/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+okta:
+  oauth2:
+    issuer: https://dev-28491107.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oaaugkr6kJrOJkP35d7
+    client-secret: w4VGuKdOWRY4gnScegLL-GNLGHxmzmiA9bRfD8X1ilmzKsLQ-gAC0GJI9j4Fk1H0
+    scopes: openid, profile, email, offline_access
