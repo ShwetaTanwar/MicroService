@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  java_db_post:
+    container_name: java_db_post
+    image: postgres:12
+    volumes:
+      - C:\Users\ShwetaTanwar\Desktop\postgres_data:/var/lib/postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: microPostgres
+
+
